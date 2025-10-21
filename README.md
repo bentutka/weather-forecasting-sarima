@@ -69,8 +69,3 @@ Future improvements could involve:
 - **Packages:** `forecast`, `tseries`, `ggplot2`, `readxl`  
 - **Environment:** RStudio
 
----
-
-### Author
-**Benjamin Tutka**  
-University of Arkansas – Forecasting & Time Series Analysis
