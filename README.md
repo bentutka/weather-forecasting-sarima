@@ -1,8 +1,8 @@
 # Forecasting Maximum Daily Temperature in the LR Area (1960)
 
 ### Overview
-This project analyzes and forecasts **maximum daily temperatures** for the Little Rock (LR) area, using historical data from **1940–1959**.  
-The goal was to develop statistical time series models to predict the **maximum daily temperature for 1960**, comparing model performance using error metrics and visual forecasts.
+This project analyzes and forecasts maximum daily temperatures for the Little Rock (LR) area, using historical data from **1940–1959**.  
+The goal was to develop statistical time series models to predict the maximum daily temperature for 1960, comparing model performance using error metrics and visual forecasts.
 
 ---
 
@@ -20,12 +20,12 @@ The goal was to develop statistical time series models to predict the **maximum 
 #### 1. **Data Preparation**
 - The dataset was formatted as a time series of maximum daily temperatures.  
 - Each year was treated as one season (`m = 365`).  
-- Data from **1959** was reserved as the **validation set**.
+- Data from **1959** was reserved as the validation set.
 
 #### 2. **Models Applied**
 
 ##### **Holt-Winter’s Additive Smoothing**
-- Decomposes data into **level**, **trend**, and **seasonal** components.  
+- Decomposes data into level, trend, and seasonal components.  
 - Parameters (`α`, `β`, `γ`) were optimized to minimize RMSE.  
 - Best-fit parameters:  
   - α = 0.6297  
@@ -34,7 +34,7 @@ The goal was to develop statistical time series models to predict the **maximum 
 
 ##### **SARIMA Modeling**
 - Seasonal ARIMA models capture autocorrelation and seasonality directly.  
-- The best model selected via AIC was **SARIMA(1, 0, 4) × (0, 1, 0)<sub>365</sub>**.  
+- The best model selected via AIC was SARIMA(1, 0, 4) × (0, 1, 0)<sub>365</sub>.  
 - Seasonal differencing was applied once to achieve stationarity.
 
 ---
@@ -44,7 +44,7 @@ The goal was to develop statistical time series models to predict the **maximum 
 | Model | MAD | MASE | RMSE | MAPE |
 |--------|------|------|------|------|
 | **Holt-Winter’s** | 15.484 | 1.604 | 18.013 | 21.842 |
-| **SARIMA(1,0,4)×(0,1,0)** | **9.085** | **0.941** | **12.13** | **14.055** |
+| **SARIMA(1,0,4)×(0,1,0)** | 9.085 | 0.941 | 12.13 | 14.055 |
 
 **SARIMA** demonstrated superior accuracy across all error metrics, effectively capturing the variability of temperature trends for 1960.
 
@@ -57,10 +57,10 @@ The goal was to develop statistical time series models to predict the **maximum 
 ---
 
 ### Conclusion
-The **SARIMA(1,0,4)×(0,1,0)** model provided the most reliable forecast for 1960 maximum daily temperatures in the LR area.  
+The SARIMA(1,0,4)×(0,1,0) model provided the most reliable forecast for 1960 maximum daily temperatures in the LR area.  
 Future improvements could involve:
-- Applying **rolling validation** for adaptive model tuning, and  
-- Incorporating **external climate variables** (e.g., precipitation, pressure).
+- Applying rolling validation for adaptive model tuning, and  
+- Incorporating external climate variables (e.g., precipitation, pressure).
 
 ---
 
