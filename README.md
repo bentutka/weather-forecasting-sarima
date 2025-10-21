@@ -20,7 +20,7 @@ The goal was to develop statistical time series models to predict the maximum da
 #### 1. **Data Preparation**
 - The dataset was formatted as a time series of maximum daily temperatures.  
 - Each year was treated as one season (`m = 365`).  
-- Data from **1959** was reserved as the validation set.
+- Data from 1959 was reserved as the validation set.
 
 #### 2. **Models Applied**
 
