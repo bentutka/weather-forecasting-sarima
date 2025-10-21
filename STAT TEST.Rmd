@@ -1,0 +1,113 @@
+---
+title: "STAT TEST"
+author: "Ben Tutka"
+date: "2025-10-20"
+output: pdf_document
+---
+```{r}
+library(readxl)
+ library(forecast)
+ library(dplyr)
+ ####
+ #### Load Data for Maximum Temperatures (1940-1959)
+ ####
+ # Load and prepare the data
+ data <-read_excel("3_LRArea.xlsx")
+ data$Date <-as.Date(data$Date, format = "%Y-%m-%d")
+ data$MaxTemperature <-as.numeric(data$MaxTemperature)
+ # Filter data for the period between 1940 and 1959, excluding February 29
+ filtered_data <-data %>%
+ filter(Date >= as.Date("1940-01-01") & Date <= as.Date("1959-12-31")) %>% filter(!(format(Date, "%m-%d") == "02-29"))
+ ######
+ #### Prepare Training and Test Sets
+ ######
+ # Convert to time series
+ full_ts <-ts(filtered_data$MaxTemperature, frequency = 365, start =
+ c(1940, 1))
+ # Split data into training (1940-1958) and test (1959) sets
+ train_data <-filtered_data %>%
+ filter(Date < as.Date("1959-01-01"))
+ test_data <-filtered_data %>%
+ filter(Date >= as.Date("1959-01-01"))
+ train_ts <-ts(train_data$MaxTemperature, frequency = 365, start = c(1940,
+ 1))
+ test_ts <-ts(test_data$MaxTemperature, frequency = 365, start = c(1959,
+ 1))
+ ######
+ #### SARIMA Model
+######
+ # Fit the SARIMA model
+ sarima_model <-auto.arima(
+ train_ts,
+ seasonal = TRUE,
+ stepwise = FALSE,
+ approximation = TRUE
+ )
+ # Forecast for 1959
+ forecast_1959_sarima <-forecast(sarima_model, h = length(test_ts))
+ # Compute error metrics for 1959
+ accuracy_metrics_sarima <-accuracy(forecast_1959_sarima, test_ts)
+ print("Error metrics for 1959 (SARIMA):")
+ print(accuracy_metrics_sarima)
+ # Plot actual vs predicted for SARIMA (1959)
+ plot(
+ test_ts, main = "Actual vs Predicted Max Temperatures (1959)-SARIMA",
+ col = "blue",
+ xlab = "Time", ylab = "Temperature", ylim = range(c(test_ts,
+ forecast_1959_sarima$mean))
+ )
+ lines(forecast_1959_sarima$mean, col = "red")
+ legend("bottomleft", legend = c("Actual", "Predicted (SARIMA)"), col =
+ c("blue", "red"), lty = 1)
+ ######
+ #### Holt-Winters Model
+ ######
+ # Fit the Holt-Winters model
+ holt_winters_model <-HoltWinters(train_ts)
+ # Forecast for 1959
+ forecast_1959_hw <-forecast(holt_winters_model, h = length(test_ts))
+ # Compute error metrics for 1959
+accuracy_metrics_hw <-accuracy(forecast_1959_hw, test_ts)
+ print("Error metrics for 1959 (Holt-Winters):")
+ print(accuracy_metrics_hw)
+ # Plot actual vs predicted for Holt-Winters (1959)
+ plot(
+ test_ts, main = "Actual vs Predicted Max Temperatures (1959)
+Holt-Winters", col = "blue",
+ xlab = "Time", ylab = "Temperature", ylim = range(c(test_ts,
+ forecast_1959_hw$mean))
+ )
+ lines(forecast_1959_hw$mean, col = "green")
+ legend(
+ "bottomleft",
+ legend = c("Actual", "Predicted (HW)"),
+ col = c("blue", "green"),
+ lty = 1
+ )
+ ######
+ #### Forecast for 1960
+ ######
+ # Refit SARIMA on the full dataset and forecast for 1960
+ final_sarima_model <-auto.arima(full_ts, seasonal = TRUE, stepwise =
+ FALSE, approximation = TRUE)
+ forecast_1960_sarima <-forecast(final_sarima_model, h = 365)
+ # Refit Holt-Winters on the full dataset and forecast for 1960
+ final_hw_model <-HoltWinters(full_ts)
+ forecast_1960_hw <-forecast(final_hw_model, h = 365)
+ # Plot SARIMA forecast for 1960
+ plot(
+ forecast_1960_sarima, main = "Forecast for 1960-SARIMA", xlab =
+ "Time", ylab = "Temperature",
+ col = "red", ylim = range(forecast_1960_sarima$mean)
+ )
+ legend("topright", legend = c("SARIMA"), col = c("red"), lty = 1)
+ # Plot Holt-Winters forecast for 1960
+plot(
+ forecast_1960_hw, main = "Forecast for 1960- Holt-Winters", xlab =
+ "Time", ylab = "Temperature",
+ col = "green", ylim = range(forecast_1960_hw$mean)
+ )
+ legend("topright", legend = c("Holt-Winters"), col = c("green"), lty = 1)
+      
+        
+```
